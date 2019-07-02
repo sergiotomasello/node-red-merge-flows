@@ -1,0 +1,24 @@
+{
+  "name": "node-red-merge-flows",
+  "version": "1.0.0",
+  "description": "Merge two or more node-red flows into one",
+  "main": "node-red-merge-flows.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sergiotomasello/node-red-merge-flows.git"
+  },
+  "keywords": [
+    "node-red",
+    "merge",
+    "flows"
+  ],
+  "author": "sergio tomasello",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/sergiotomasello/node-red-merge-flows/issues"
+  },
+  "homepage": "https://github.com/sergiotomasello/node-red-merge-flows#readme"
+}
