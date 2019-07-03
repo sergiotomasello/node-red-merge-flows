@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/sergiotomasello/node-red-merge-flows/issues"
   },
-  "homepage": "https://github.com/sergiotomasello/node-red-merge-flows#readme"
+  "homepage": "https://github.com/sergiotomasello/node-red-merge-flows#readme",
+  "dependencies": {
+    "yargs": "^13.2.4"
+  }
 }
