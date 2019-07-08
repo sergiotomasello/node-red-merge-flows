@@ -55,8 +55,11 @@ var argv = require('yargs') // eslint-disable-line
     alias: 'o',
     default: "merged.json",
     describe: "Output merged json file"
-
-    
+  })
+  .option('site', {
+    alias: 's',
+    default: undefined,
+    describe: "When your flows contains Sites, you can specify the Site name to use in the merged flow. If not, first encountered Site will be used."
   })
   .check(function(options, arguments) {
         var msg = checkFilesExist(options.input);
@@ -119,8 +122,9 @@ function checkFilesFormat(files){
 // var input_files = getFromArgs("--i");
 // var output_files = getFromArgs("--o");
 
-var input_files = argv.input
-var output_files = argv.output
+var input_files = argv.input;
+var output_files = argv.output;
+var site_name = argv.site;
 
 if( !Array.isArray(argv.input) ){
     input_files = [];
@@ -134,8 +138,20 @@ if( !Array.isArray(argv.output) ){
 
 var contents = getContent(input_files);
 var merged = mergeContents(contents);
+var final = merged;
+///////////
 
-saveAll(output_files[0], merged);
+
+if(typeof site_name === 'undefined'){
+    //first wins
+    final = siteFirstWins(merged);
+} else {
+    //selected site
+    final = siteSelected(merged, site_name);
+}
+
+///////////
+saveAll(output_files[0], final);
 
 function saveAll(file, data){
     data = JSON.stringify(data); 
@@ -175,4 +191,54 @@ function getFromArgs(opt){
     }
 
     return input_array;
+}
+
+function siteFirstWins(content){
+    for(var i = 0; i < content.length; i++){
+        var item = content[i];
+        var site_theme;
+        if( "site" in content[i] && "theme" in content[i]){
+            
+            if(typeof site_theme === "undefined"){ //first site/theme node
+                site_theme = content[i];
+                console.log("First Site occurence found: \""+ site_theme.site.name +"\"");
+            }else{ //others site/theme items -> overwrite
+                content[i].site = site_theme.site;
+                content[i].theme = site_theme.theme;
+            }
+        }
+    }
+    return content;
+}
+
+function siteSelected(content, sitename){
+    var site_theme;
+    for(var i = 0; i < content.length; i++){
+        var item = content[i];
+
+        if( "site" in content[i] && "theme" in content[i] && content[i].site.name === sitename ){
+            site_theme = content[i];
+            break;
+            // if(typeof site_theme === "undefined"){ //first site/theme node
+            //     site_theme = content[i];
+            // }else{ //others site/theme items -> overwrite
+            //     content[i].site = site_theme.site;
+            //     content[i].theme = site_theme.theme;
+            // }
+        }
+    }
+
+    if(typeof site_theme !== 'undefined'){
+        for(var i = 0; i < content.length; i++){
+            if( "site" in content[i] && "theme" in content[i]){
+                content[i].site = site_theme.site;
+                content[i].theme = site_theme.theme;
+            }
+        }
+    } else {
+        console.log("No Site named \""+ sitename + "\" found! Using first wins methods");
+        content = siteFirstWins(content);
+    }
+
+    return content;
 }
