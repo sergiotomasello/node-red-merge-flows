@@ -10,6 +10,9 @@
     "type": "git",
     "url": "git+https://github.com/sergiotomasello/node-red-merge-flows.git"
   },
+  "bin": {
+    "node-red-merge-flows": "node-red-merge-flows.js"
+  },
   "keywords": [
     "node-red",
     "merge",
